@@ -1,5 +1,5 @@
 /**
- *    Copyright 2010-2016 the original author or authors.
+ *    Copyright 2010-2017 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class MyBatisCursorItemReader<T> extends AbstractItemCountingItemStreamIt
 
   @Override
   protected void doOpen() throws Exception {
-    Map<String, Object> parameters = new HashMap<String, Object>();
+    Map<String, Object> parameters = new HashMap<>();
     if (parameterValues != null) {
       parameters.putAll(parameterValues);
     }
@@ -71,8 +71,12 @@ public class MyBatisCursorItemReader<T> extends AbstractItemCountingItemStreamIt
 
   @Override
   protected void doClose() throws Exception {
-    cursor.close();
-    sqlSession.close();
+    if (cursor != null) {
+      cursor.close();
+    }
+    if (sqlSession != null) {
+      sqlSession.close();
+    }
     cursorIterator = null;
   }
 
@@ -83,8 +87,8 @@ public class MyBatisCursorItemReader<T> extends AbstractItemCountingItemStreamIt
    */
   @Override
   public void afterPropertiesSet() throws Exception {
-    notNull(sqlSessionFactory);
-    notNull(queryId);
+    notNull(sqlSessionFactory, "A SqlSessionFactory is required.");
+    notNull(queryId, "A queryId is required.");
   }
 
   /**

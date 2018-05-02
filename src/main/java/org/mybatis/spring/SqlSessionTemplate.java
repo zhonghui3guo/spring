@@ -1,5 +1,5 @@
 /**
- *    Copyright 2010-2016 the original author or authors.
+ *    Copyright 2010-2017 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ import org.springframework.dao.support.PersistenceExceptionTranslator;
  * }
  * </pre>
  *
- * @author Putthibong Boonbong
+ * @author Putthiphong Boonphong
  * @author Hunter Presnall
  * @author Eduardo Macarron
  *
@@ -155,7 +155,7 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
    */
   @Override
   public <T> T selectOne(String statement) {
-    return this.sqlSessionProxy.<T> selectOne(statement);
+    return this.sqlSessionProxy.selectOne(statement);
   }
 
   /**
@@ -163,7 +163,7 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
    */
   @Override
   public <T> T selectOne(String statement, Object parameter) {
-    return this.sqlSessionProxy.<T> selectOne(statement, parameter);
+    return this.sqlSessionProxy.selectOne(statement, parameter);
   }
 
   /**
@@ -171,7 +171,7 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
    */
   @Override
   public <K, V> Map<K, V> selectMap(String statement, String mapKey) {
-    return this.sqlSessionProxy.<K, V> selectMap(statement, mapKey);
+    return this.sqlSessionProxy.selectMap(statement, mapKey);
   }
 
   /**
@@ -179,7 +179,7 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
    */
   @Override
   public <K, V> Map<K, V> selectMap(String statement, Object parameter, String mapKey) {
-    return this.sqlSessionProxy.<K, V> selectMap(statement, parameter, mapKey);
+    return this.sqlSessionProxy.selectMap(statement, parameter, mapKey);
   }
 
   /**
@@ -187,7 +187,7 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
    */
   @Override
   public <K, V> Map<K, V> selectMap(String statement, Object parameter, String mapKey, RowBounds rowBounds) {
-    return this.sqlSessionProxy.<K, V> selectMap(statement, parameter, mapKey, rowBounds);
+    return this.sqlSessionProxy.selectMap(statement, parameter, mapKey, rowBounds);
   }
 
   /**
@@ -219,7 +219,7 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
    */
   @Override
   public <E> List<E> selectList(String statement) {
-    return this.sqlSessionProxy.<E> selectList(statement);
+    return this.sqlSessionProxy.selectList(statement);
   }
 
   /**
@@ -227,7 +227,7 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
    */
   @Override
   public <E> List<E> selectList(String statement, Object parameter) {
-    return this.sqlSessionProxy.<E> selectList(statement, parameter);
+    return this.sqlSessionProxy.selectList(statement, parameter);
   }
 
   /**
@@ -235,7 +235,7 @@ public class SqlSessionTemplate implements SqlSession, DisposableBean {
    */
   @Override
   public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
-    return this.sqlSessionProxy.<E> selectList(statement, parameter, rowBounds);
+    return this.sqlSessionProxy.selectList(statement, parameter, rowBounds);
   }
 
   /**

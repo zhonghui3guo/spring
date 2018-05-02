@@ -1,5 +1,5 @@
 /**
- *    Copyright 2010-2016 the original author or authors.
+ *    Copyright 2010-2017 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -138,7 +138,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
    * If it is true, the mapper will be added to MyBatis in the case it is not already
    * registered.
    * <p/>
-   * By default addToCofig is true.
+   * By default addToConfig is true.
    *
    * @param addToConfig
    */

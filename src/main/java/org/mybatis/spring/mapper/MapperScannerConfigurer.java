@@ -1,5 +1,5 @@
 /**
- *    Copyright 2010-2016 the original author or authors.
+ *    Copyright 2010-2017 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -37,7 +37,6 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.util.StringUtils;
 
 /**
@@ -69,7 +68,7 @@ import org.springframework.util.StringUtils;
  * <p>
  * Passing in an actual object which may require placeholders (i.e. DB user password) will fail. 
  * Using bean names defers actual object creation until later in the startup
- * process, after all placeholder substituation is completed. However, note that this configurer
+ * process, after all placeholder substitution is completed. However, note that this configurer
  * does support property placeholders of its <em>own</em> properties. The <code>basePackage</code>
  * and bean name properties all support <code>${property}</code> style substitution.
  * <p>
@@ -328,8 +327,8 @@ public class MapperScannerConfigurer implements BeanDefinitionRegistryPostProces
   private void processPropertyPlaceHolders() {
     Map<String, PropertyResourceConfigurer> prcs = applicationContext.getBeansOfType(PropertyResourceConfigurer.class);
 
-    if (!prcs.isEmpty() && applicationContext instanceof GenericApplicationContext) {
-      BeanDefinition mapperScannerBean = ((GenericApplicationContext) applicationContext)
+    if (!prcs.isEmpty() && applicationContext instanceof ConfigurableApplicationContext) {
+      BeanDefinition mapperScannerBean = ((ConfigurableApplicationContext) applicationContext)
           .getBeanFactory().getBeanDefinition(beanName);
 
       // PropertyResourceConfigurer does not expose any methods to explicitly perform

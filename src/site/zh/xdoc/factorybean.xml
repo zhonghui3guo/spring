@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-       Copyright 2010-2016 the original author or authors.
+       Copyright 2010-2018 the original author or authors.
 
        Licensed under the Apache License, Version 2.0 (the "License");
        you may not use this file except in compliance with the License.
@@ -29,74 +29,59 @@
   <body>
     <section name="SqlSessionFactoryBean">
       <p>
-在基本的 MyBatis 中,session 工厂可以使用 SqlSessionFactoryBuilder 来创建。而在
-MyBatis-Spring 中,则使用 SqlSessionFactoryBean 来替代。
+      在基础的 MyBatis 用法中，是通过 <code>SqlSessionFactoryBuilder</code> 来创建 <code>SqlSessionFactory</code> 的。
+      而在 MyBatis-Spring 中，则使用 <code>SqlSessionFactoryBean</code> 来创建。
       </p>
       
-    <subsection name="Setup">
+    <subsection name="设置">
       <p>
-要创建工厂 bean,放置下面的代码在 Spring 的 XML 配置文件中:
+      要创建工厂 bean，将下面的代码放到 Spring 的 XML 配置文件中：
       </p>
         <source><![CDATA[
 <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
   <property name="dataSource" ref="dataSource" />
 </bean>]]></source>
-	  <p>
-要注意 SqlSessionFactoryBean 实现了 Spring 的 FactoryBean 接口(请参考 Spring 文
-档的 3.8 章节)这就说明了由 Spring 最终创建的 bean 不是 SqlSessionFactoryBean 本身,
-。
-而是工厂类的 getObject()返回的方法的结果。这种情况下,Spring 将会在应用启动时为你
-创建 SqlSessionFactory 对象,然后将它以 SqlSessionFactory 为名来存储。在 Java 中,
-相同的代码是:
-      </p>
+
+<p>
+  需要注意的是 <code>SqlSessionFactoryBean</code> 实现了 Spring 的 <code>FactoryBean</code> 接口（参见 Spring 官方文档 3.8 节 <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-factory-extension-factorybean">通过工厂 bean 自定义实例化逻辑</a>）。这意味着由 Spring 最终创建的 bean <b>并不是</b> <code>SqlSessionFactoryBean</code> 本身，而是工厂类（<code>SqlSessionFactoryBean</code>）的 getObject() 方法的返回结果。这种情况下，Spring 将会在应用启动时为你创建 <code>SqlSessionFactory</code>，并使用 <code>sqlSessionFactory</code> 这个名字存储起来。
+</p>
+<p>
+  等效的 Java 代码如下：
+</p>
 
       <source><![CDATA[
-SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-SqlSessionFactory sessionFactory = factoryBean.getObject();]]></source>
+@Bean
+public SqlSessionFactory sqlSessionFactory() {
+  SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+  factoryBean.setDataSource(dataSource());
+  return factoryBean.getObject();
+}]]></source>
 
       <p>
-在一般的 MyBatis-Spring 用法中,
-你不需要直接使用 SqlSessionFactoryBean 或和其对
-应的 SqlSessionFactory。相反,session 工厂将会被注入到 MapperFactoryBean 或其它扩
-展了 SqlSessionDaoSupport 的 DAO(Data Access Object,数据访问对象,译者注)中。
+        通常，在 MyBatis-Spring 中，你不需要直接使用 <code>SqlSessionFactoryBean</code> 或对应的 <code>SqlSessionFactory</code>。相反，session 的工厂 bean 将会被注入到 <code>MapperFactoryBean</code> 或其它继承于 <code>SqlSessionDaoSupport</code> 的 DAO（Data Access Object，数据访问对象）中。
       </p>
     </subsection>
 
     <subsection name="属性">
 
       <p>
-SqlSessionFactory 有一个单独的必须属性,就是 JDBC 的 DataSource。这可以是任意
-的 DataSource,其配置应该和其它 Spring 数据库连接是一样的。
+        <code>SqlSessionFactory</code> 有一个唯一的必要属性：用于 JDBC 的 <code>DataSource</code>。这可以是任意的 <code>DataSource</code> 对象，它的配置方法和其它 Spring 数据库连接是一样的。
       </p>
 
       <p>
-一个通用的属性是 configLocation,它是用来指定 MyBatis 的 XML 配置文件路径的。
-如果基本的 MyBatis 配置需要改变,
-那么这就是一个需要它的地方。
-通常这会是<code>&lt;settings&gt;</code>
-或<code>&lt;typeAliases&gt;</code>的部分。
+        一个常用的属性是 <code>configLocation</code>，它用来指定 MyBatis 的 XML 配置文件路径。它在需要修改 MyBatis 的基础配置非常有用。通常，基础配置指的是 <code>&lt;settings&gt;</code> 或 <code>&lt;typeAliases&gt;</code> 元素。
       </p>
 
       <p>
-要注意这个配置文件不需要是一个完整的 MyBatis 配置。确切地说,任意环境,数据源
-和 MyBatis 的事务管理器都会被忽略。SqlSessionFactoryBean 会创建它自己的,使用这些
-值定制 MyBatis 的 Environment 时是需要的。
+        需要注意的是，这个配置文件<b>并不需要</b>是一个完整的 MyBatis 配置。确切地说，任何环境配置（<code>&lt;environments&gt;</code>），数据源（<code>&lt;DataSource&gt;</code>）和 MyBatis 的事务管理器（<code>&lt;transactionManager&gt;</code>）都会被<b>忽略</b>。<code>SqlSessionFactoryBean</code> 会创建它自有的 MyBatis 环境配置（<code>Environment</code>），并按要求设置自定义环境的值。
       </p>
 
       <p>
-如果 MyBatis 映射器 XML 文件在和映射器类相同的路径下不存在,那么另外一个需要
-配置文件的原因就是它了。使用这个配置,有两种选择。第一是手动在 MyBatis 的 XML 配
-置文件中使用&lt;mappers&gt;部分来指定类路径。第二是使用工厂 bean 的 mapperLocations 属
-性。
+        如果 MyBatis 在映射器类对应的路径下找不到与之相对应的映射器 XML 文件，那么也需要配置文件。这时有两种解决办法：第一种是手动在 MyBatis 的 XML 配置文件中的 &lt;mappers&gt; 部分中指定 XML 文件的类路径；第二种是设置工厂 bean 的 <code>mapperLocations</code> 属性。
       </p>
 
       <p>
-mapperLocations 属性使用一个资源位置的 list。
-这个属性可以用来指定 MyBatis 的 XML
-映射器文件的位置。
-它的值可以包含 Ant 样式来加载一个目录中所有文件,
-或者从基路径下
-递归搜索所有路径。比如:
+        <code>mapperLocations</code> 属性接受多个资源位置。这个属性可以用来指定 MyBatis 的映射器 XML 配置文件的位置。属性的值是一个 Ant 风格的字符串，可以指定加载一个目录中的所有文件，或者从一个目录开始递归搜索所有目录。比如:
       </p>
       
         <source><![CDATA[
@@ -106,20 +91,37 @@ mapperLocations 属性使用一个资源位置的 list。
 </bean>]]></source>
 
       <p>
-这会从类路径下加载在 sample.config.mappers 包和它的子包中所有的 MyBatis 映射器
-XML 文件。
+        这会从类路径下加载所有在 sample.config.mappers 包和它的子包中的 MyBatis 映射器 XML 配置文件。
       </p>
 
       <p>
-在容器环境管理事务中,一个可能需要的属性是 transactionFactoryClass。请参考
-第四章(4.2 节)中来查看有关部分。
+        在容器管理事务的时候，你可能需要的一个属性是 <code>transactionFactoryClass</code>。请参考事务一章的相关章节。
       </p>
 
+      <p>
+        如果你使用了多个数据库，那么需要设置 <code>databaseIdProvider</code> 属性：
+      </p>
+
+      <source><![CDATA[
+<bean id="databaseIdProvider" class="org.apache.ibatis.mapping.VendorDatabaseIdProvider">
+  <property name="properties">
+    <props>
+      <prop key="SQL Server">sqlserver</prop>
+      <prop key="DB2">db2</prop>
+      <prop key="Oracle">oracle</prop>
+      <prop key="MySQL">mysql</prop>
+    </props>
+  </property>
+</bean>
+
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+  <property name="dataSource" ref="dataSource" />
+  <property name="mapperLocations" value="classpath*:sample/config/mappers/**/*.xml" />
+  <property name="databaseIdProvider" ref="databaseIdProvider"/>
+</bean>]]></source>
+
         <p>
-            <span class="label important">NOTE</span>
-            Since 1.3.0, <code>configuration</code> property has been added.
-            It can be specified a <code>Configuration</code> instance directly without MyBatis XML configuration file.
-            For example:
+          <span class="label important">提示</span> 自 1.3.0 版本开始，新增的 <code>configuration</code> 属性能够在没有对应的 MyBatis XML 配置文件的情况下，直接设置 <code>Configuration</code> 实例。例如：
         </p>
 
         <source><![CDATA[

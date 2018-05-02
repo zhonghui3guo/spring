@@ -1,5 +1,5 @@
 /**
- *    Copyright 2010-2016 the original author or authors.
+ *    Copyright 2010-2017 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,11 +21,11 @@ import static org.springframework.util.Assert.notNull;
 import java.util.List;
 
 import org.apache.ibatis.executor.BatchResult;
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.logging.Logger;
+import org.mybatis.logging.LoggerFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.InitializingBean;
@@ -54,7 +54,7 @@ import org.springframework.dao.InvalidDataAccessResourceUsageException;
  */
 public class MyBatisBatchItemWriter<T> implements ItemWriter<T>, InitializingBean {
 
-  private static final Log LOGGER = LogFactory.getLog(MyBatisBatchItemWriter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MyBatisBatchItemWriter.class);
 
   private SqlSessionTemplate sqlSessionTemplate;
 
@@ -119,10 +119,7 @@ public class MyBatisBatchItemWriter<T> implements ItemWriter<T>, InitializingBea
   public void write(final List<? extends T> items) {
 
     if (!items.isEmpty()) {
-
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Executing batch with " + items.size() + " items.");
-      }
+      LOGGER.debug(() -> "Executing batch with " + items.size() + " items.");
 
       for (T item : items) {
         sqlSessionTemplate.update(statementId, item);
